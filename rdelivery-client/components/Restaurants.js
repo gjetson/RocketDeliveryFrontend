@@ -20,22 +20,10 @@ import ForwardButton from "./ForwardButton"
 export default function Restaurants({ navigation }) {
 
     const [restaurants, setRestaurants] = useState([])
-    const [countries, setCountries] = useState([])
-    const [cities, setCities] = useState([])
-
-    const citiesDropdownRef = useRef()
-
-    useEffect(() => {
-        setTimeout(() => {
-            setCountries([
-                { title: "Egypt", cities: [{ title: "Cairo" }, { title: "Alex" }] },
-                {
-                    title: "Canada",
-                    cities: [{ title: "Toronto" }, { title: "Quebec City" }],
-                },
-            ])
-        }, 1000)
-    }, [])
+    const [ratings, setRatings] = useState([])
+    const [prices, setPrices] = useState([])
+    const [selectedRating, setSelectedRating] = useState(-1)
+    const [selectedPrice, setSelectedPrice] = useState(-1)
 
     useEffect(() => {
         const fetchRestaurants = async () => {
@@ -45,6 +33,14 @@ export default function Restaurants({ navigation }) {
                 if (response && response.status === 200) {
                     setRestaurants(json)
                     console.log("fetchRestaurants: ", json)
+                    const ratingsArr = json.map((item) => {
+                        return { rating: item.ave_rating }
+                    })
+                    setRatings(flterDuplicateRatings(ratingsArr))
+                    const pricesArr = json.map((item) => {
+                        return { price: item.restaurant.price_range }
+                    })
+                    setPrices(flterDuplicatePrices(pricesArr))
                 } else {
                     console.error(response.status)
                 }
@@ -55,6 +51,55 @@ export default function Restaurants({ navigation }) {
         fetchRestaurants()
     }, [])
 
+    const flterDuplicateRatings = (arr) => {
+        return arr.filter((value, index, self) =>
+            index === self.findIndex((t) => (
+                t.rating === value.rating
+            ))
+        )
+    }
+
+    const flterDuplicatePrices = (arr) => {
+        return arr.filter((value, index, self) =>
+            index === self.findIndex((t) => (
+                t.price === value.price
+            ))
+        )
+    }
+
+    const getDisplayRestaurants = () => {
+        let display = filterRestaurantsByRating(restaurants)
+        console.log("filter: ", display)
+        display = filterRestaurantsByPrice(display)
+        console.log("display: ", display)
+        return display
+    }
+
+    const filterRestaurantsByRating = (arr) => {
+        console.log('rating: ', selectedRating)
+        if (selectedRating < 0) {
+            return arr
+        } else {
+            return arr.filter((item) => {
+                if (item.ave_rating === selectedRating.rating) {
+                    return item
+                }
+            })
+        }
+    }
+
+    const filterRestaurantsByPrice = (arr) => {
+        console.log('price: ', selectedPrice)
+        if (selectedPrice < 0) {
+            return arr
+        } else {
+            return arr.filter((item) => {
+                if (item.restaurant.price_range === selectedPrice.price) {
+                    return item
+                }
+            })
+        }
+    }
 
     const random = () => {
         const i = Math.floor(Math.random() * 6) + 1
@@ -91,19 +136,18 @@ export default function Restaurants({ navigation }) {
             <br />
             <View style={MainStyles.dropdownsRow}>
                 <SelectDropdown
-                    data={countries}
+                    data={ratings}
                     onSelect={(selectedItem, index) => {
                         console.log(selectedItem, index)
-                        citiesDropdownRef.current.reset()
-                        setCities([])
-                        setCities(selectedItem.cities)
+                        // loadDisplayRestaurantsByRating(selectedItem.rating)
+                        setSelectedRating(selectedItem)
                     }}
                     defaultButtonText={"Rating"}
                     buttonTextAfterSelection={(selectedItem, index) => {
-                        return selectedItem.title
+                        return selectedItem.rating
                     }}
                     rowTextForSelection={(item, index) => {
-                        return item.title
+                        return item.rating
                     }}
                     buttonStyle={MainStyles.dropdown1BtnStyle}
                     buttonTextStyle={MainStyles.dropdown1BtnTxtStyle}
@@ -122,17 +166,18 @@ export default function Restaurants({ navigation }) {
                 />
                 <View style={MainStyles.divider} />
                 <SelectDropdown
-                    ref={citiesDropdownRef}
-                    data={cities}
+                    data={prices}
                     onSelect={(selectedItem, index) => {
                         console.log(selectedItem, index)
+                        // loadDisplayRestaurantsByPrice(selectedItem.price)
+                        setSelectedPrice(selectedItem)
                     }}
                     defaultButtonText={"Price"}
                     buttonTextAfterSelection={(selectedItem, index) => {
-                        return selectedItem.title
+                        return selectedItem.price
                     }}
                     rowTextForSelection={(item, index) => {
-                        return item.title
+                        return item.price
                     }}
                     buttonStyle={MainStyles.dropdown2BtnStyle}
                     buttonTextStyle={MainStyles.dropdown1BtnTxtStyle}
@@ -153,7 +198,7 @@ export default function Restaurants({ navigation }) {
                     vertical
                     showsVerticalScrollIndicator={false}
                     numColumns={2}
-                    data={restaurants}
+                    data={getDisplayRestaurants()}
                     renderItem={renderRestaurants}
                     keyExtractor={(item) => `${item.restaurant.id}`}
                 />
