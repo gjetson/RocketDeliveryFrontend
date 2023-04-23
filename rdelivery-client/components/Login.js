@@ -35,7 +35,11 @@ export default function Login({ navigation }) {
                     setPassword('')
                     setFail(false)
                     console.log("login: ", json)
-                    navigation.navigate('Restaurants')
+                    navigation.navigate('Restaurants', {
+                        customer_id: json.customer_id,
+                        user_id: json.user_id,
+                        courier_id: json.courier_id,
+                    })
                 } else {
                     setEmail('')
                     setPassword('')

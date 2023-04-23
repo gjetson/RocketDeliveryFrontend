@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome"
 import { faBurger } from "@fortawesome/free-solid-svg-icons/faBurger"
 import { faClockRotateLeft } from "@fortawesome/free-solid-svg-icons/faClockRotateLeft"
 
-export default function Footer() {
+export default function Footer({ navigation }) {
     return (
         <View style={styles.footer}>
             <View style={styles.iconContent}>
@@ -19,3 +19,11 @@ export default function Footer() {
         </View>
     )
 }
+
+// example href in react-native
+// import { Linking } from 'react-native';
+
+// <Text style={{color: 'blue'}}
+//       onPress={() => Linking.openURL('http://google.com')}>
+//   Google
+// </Text>

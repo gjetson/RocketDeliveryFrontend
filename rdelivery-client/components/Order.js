@@ -14,15 +14,16 @@ import {
 } from "react-native"
 import MainStyles from "../css/MainStyles"
 import OrderStyles from "../css/OrderStyles"
-import { categories } from "../../data/dataArrays"
-import { getNumberOfRecipes } from "../../data/MockDataAPI"
-import MenuImage from "../../components/MenuImage/MenuImage"
-import Footer from "../footer"
-import BackButton from "../BackButton/BackButton"
-import ForwardButton from "../ForwardButton/Forwardbutton"
+import { categories } from "../data/data_arrays"
+import { getNumberOfRecipes } from "../data/MockDataApi"
+import MenuImage from "./MenuImage"
+import Footer from "./Footer"
+import BackButton from "./BackButton"
+import ForwardButton from "./ForwardButton"
 
-export default function Order({ navigation }) {
-
+export default function Order({ route, navigation }) {
+    const { item, customer_id, user_id, courier_id } = route.params
+    console.log(item, customer_id, user_id, courier_id)
     const [modalVisible, setModalVisible] = useState(false)
     const [count, setCount] = useState(0)
 
@@ -65,9 +66,9 @@ export default function Order({ navigation }) {
             <br />
             <Text style={MainStyles.nearby}> RESTAURANT MENU</Text>
             <br />
-            <Text style={OrderStyles.restaurantName}> Name of Restaurant Here</Text>
-            <Text style={OrderStyles.menuitemz}>Price: </Text>
-            <Text style={OrderStyles.menuitemz}>Rating: </Text>
+            <Text style={OrderStyles.restaurantName}> {item.restaurant.name}</Text>
+            <Text style={OrderStyles.menuitemz}>Price: {item.restaurant.price_range}</Text>
+            <Text style={OrderStyles.menuitemz}>Rating: {item.ave_rating}</Text>
             <View>
 
                 {/*///// start of create order MODAL HERE ////////*/}

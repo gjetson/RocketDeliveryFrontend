@@ -6,6 +6,8 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import HomeScreen from './components/HomeScreen'
 import Login from './components/Login'
 import Restaurants from './components/Restaurants'
+import Order from './components/Order'
+import OrderHistory from './components/OrderHistory'
 
 function DetailsScreen({ navigation }) {
   return (
@@ -34,6 +36,8 @@ export default function App() {
         <Stack.Screen name="Home" component={HomeScreen} options={{ title: 'Overview' }} />
         <Stack.Screen name="Login" component={Login} options={{ title: 'Login' }} />
         <Stack.Screen name="Restaurants" component={Restaurants} options={{ title: 'Restaurants' }} />
+        <Stack.Screen name="Order" component={Order} options={{ title: 'Order' }} />
+        <Stack.Screen name="OrderHistory" component={OrderHistory} options={{ title: 'Order History' }} />
         <Stack.Screen name="Details" component={DetailsScreen} options={{ title: 'Bite Me...' }} />
       </Stack.Navigator>
     </NavigationContainer>

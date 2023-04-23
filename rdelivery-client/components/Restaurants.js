@@ -17,8 +17,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome"
 import { faSortDown } from "@fortawesome/free-solid-svg-icons/faSortDown"
 import ForwardButton from "./ForwardButton"
 
-export default function Restaurants({ navigation }) {
-
+export default function Restaurants({ route, navigation }) {
+    const { customer_id, user_id, courier_id } = route.params
     const [restaurants, setRestaurants] = useState([])
     const [ratings, setRatings] = useState([])
     const [prices, setPrices] = useState([])
@@ -107,22 +107,24 @@ export default function Restaurants({ navigation }) {
         return i
     }
 
-    const renderRestaurants = ({ item }) => (
-        <TouchableHighlight
-            underlayColor="rgba(73,182,77,0.9)"
-            onPress={() => navigation.navigate("Restaurant", { item })}
-        >
-            <View style={MainStyles.container}>
-                <Image style={restaurantStyles.photo} source={require(`../assets/images/restaurants/cuisine_${random()}.jpg`)} />
-                <br />
-                <Text style={restaurantStyles.title}>{item.restaurant.name}</Text>
-                <Text style={restaurantStyles.category}>
-                    {item.ave_rating} stars
-                </Text>
-                <br />
-            </View>
-        </TouchableHighlight>
-    )
+    const renderRestaurants = ({ item }) => {
+        return (
+            <TouchableHighlight
+                underlayColor="rgba(73,182,77,0.9)"
+                onPress={() => navigation.navigate("Order", { item, customer_id, user_id, courier_id })}
+            >
+                <View style={MainStyles.container}>
+                    <Image style={restaurantStyles.photo} source={require(`../assets/images/restaurants/cuisine_${random()}.jpg`)} />
+                    <br />
+                    <Text style={restaurantStyles.title}>{item.restaurant.name}</Text>
+                    <Text style={restaurantStyles.category}>
+                        {item.ave_rating} stars
+                    </Text>
+                    <br />
+                </View>
+            </TouchableHighlight>
+        )
+    }
 
     return (
         <>
