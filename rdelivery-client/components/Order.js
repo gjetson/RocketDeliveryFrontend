@@ -25,8 +25,8 @@ export default function Order({ route, navigation }) {
     const { item, customer_id, user_id, courier_id } = route.params
     console.log(item, customer_id, user_id, courier_id)
     const [modalVisible, setModalVisible] = useState(false)
-    // const [count, setCount] = useState(0)
     const [products, setProducts] = useState([])
+    const [order, setOrder] = useState({ total: 0, summary: '' })
 
     useEffect(() => {
         const fetchProducts = async () => {
@@ -78,6 +78,20 @@ export default function Order({ route, navigation }) {
             return product
         })
         setProducts(updated)
+    }
+
+    const createOrder = () => {
+        const order = { total: 0, summary: '' }
+        products.forEach((product) => {
+            if (product.count > 0) {
+                const subTotal = product.count * product.cost
+                order.total += subTotal
+            }
+        })
+        if (order.total > 0) {
+            setOrder(order)
+            setModalVisible(true)
+        }
     }
 
     const getCount = (product_id) => {
@@ -164,7 +178,7 @@ export default function Order({ route, navigation }) {
                             <View style={MainStyles.modalView}>
                                 <Text style={MainStyles.modalText}>Order Confirmation</Text>
                                 <Text style={MainStyles.modalText2}>Order Summary</Text>
-                                <Text style={MainStyles.modalText3}> TOTAL: </Text>
+                                <Text style={MainStyles.modalText3}> TOTAL: {order.total}</Text>
                                 <Pressable
                                     style={MainStyles.buttonClose}
                                     onPress={() => setModalVisible(!modalVisible)}>
@@ -175,7 +189,7 @@ export default function Order({ route, navigation }) {
                     </Modal>
                     <Pressable
                         style={MainStyles.button}
-                        onPress={() => setModalVisible(true)}>
+                        onPress={() => createOrder()}>
                         <Text style={MainStyles.textStyle}>Create Order</Text>
                     </Pressable>
                 </View>

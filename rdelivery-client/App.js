@@ -33,7 +33,7 @@ export default function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator>
-        <Stack.Screen name="Home" component={HomeScreen} options={{ title: 'Overview' }} />
+        {/* <Stack.Screen name="Home" component={HomeScreen} options={{ title: 'Overview' }} /> */}
         <Stack.Screen name="Login" component={Login} options={{ title: 'Login' }} />
         <Stack.Screen name="Restaurants" component={Restaurants} options={{ title: 'Restaurants' }} />
         <Stack.Screen name="Order" component={Order} options={{ title: 'Order' }} />
