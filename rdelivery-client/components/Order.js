@@ -1,4 +1,4 @@
-import React, { useLayoutEffect, useState } from "react"
+import React, { useEffect, useState } from "react"
 import {
     FlatList,
     Text,
@@ -25,12 +25,71 @@ export default function Order({ route, navigation }) {
     const { item, customer_id, user_id, courier_id } = route.params
     console.log(item, customer_id, user_id, courier_id)
     const [modalVisible, setModalVisible] = useState(false)
-    const [count, setCount] = useState(0)
+    // const [count, setCount] = useState(0)
+    const [products, setProducts] = useState([])
+
+    useEffect(() => {
+        const fetchProducts = async () => {
+            try {
+                const response = await fetch(`http://localhost:3000/api/products?restaurant=${item.restaurant.id}`)
+                const json = await response.json()
+                if (response && response.status === 200) {
+                    const updated = json.map((item) => {
+                        item.count = 0
+                        return item
+                    })
+                    console.log("fetchProducts: ", updated)
+                    setProducts(updated)
+                } else {
+                    console.error(response.status)
+                }
+            } catch (error) {
+                console.error(error)
+            }
+        }
+        fetchProducts()
+    }, [])
 
     const onPressCategory = (item) => {
         const title = item.name
         const category = item
         navigation.navigate("RecipesList", { category, title })
+    }
+
+    const handleIncrement = (product_id) => {
+        console.log('handleIncrement: ', product_id)
+        const updated = products.map((product) => {
+            if (product.id === product_id) {
+                product.count += 1
+                console.log('count: ', product.count)
+            }
+            return product
+        })
+        setProducts(updated)
+    }
+
+    const handleDecrement = (product_id) => {
+        console.log('handleDecrement: ', product_id)
+        const updated = products.map((product) => {
+            if (product.id === product_id && product.count > 0) {
+                console.log('count: ', product.count)
+                product.count -= 1
+            }
+            return product
+        })
+        setProducts(updated)
+    }
+
+    const getCount = (product_id) => {
+        console.log('getCount: ', product_id)
+        let result = 0
+        products.forEach((product) => {
+            if (product.id === product_id) {
+                console.log('return count: ', product.count)
+                result = product.count
+            }
+        })
+        return result
     }
 
     const renderCategory = ({ item }) => (
@@ -41,15 +100,35 @@ export default function Order({ route, navigation }) {
             <View style={OrderStyles.categoriesItemContainer}>
                 <Image
                     style={OrderStyles.categoriesPhoto}
-                    source={{ uri: item.photo_url }}
+                    source={{ uri: getSource(item) }}
                 />
-                <Text style={OrderStyles.categoriesName}>{item.name}</Text>
-                <Text style={OrderStyles.categoriesInfo}>
-                    {getNumberOfRecipes(item.id)} recipes
-                </Text>
+                <View style={{ flex: 0.5 }}>
+                    <Text>{item.name}</Text>
+                    <Text>
+                        cost: {item.cost}
+                    </Text>
+                </View>
+                <View style={{ flexDirection: 'row' }} >
+                    <Button
+                        title="-"
+                        onPress={() => { handleDecrement(item.id) }}
+                    />
+                    <Text>      {getCount(item.id)}      </Text>
+                    <Button
+                        title="+"
+                        onPress={() => { handleIncrement(item.id) }}
+                    />
+                </View>
             </View>
         </TouchableHighlight>
     )
+
+    const getSource = (item) => {
+        if (item.description == null) {
+            return 'https://png.pngtree.com/png-clipart/20210609/ourmid/pngtree-burger-fast-food-neon-light-effect-png-image_3423331.jpg'
+        }
+        return item.description
+    }
 
     return (
         <>
@@ -103,11 +182,11 @@ export default function Order({ route, navigation }) {
                 {/*  //// END OF MODAL ////////// */}
                 <View>
                     <FlatList
-                        data={categories}
+                        data={products}
                         renderItem={renderCategory}
                         keyExtractor={(item) => `${item.id}`}
                     />
-                    <TouchableOpacity
+                    {/* <TouchableOpacity
                         onPress={() => setCount((prevCount) => prevCount - 1)}
                         style={OrderStyles.fab1}
                     >
@@ -119,7 +198,7 @@ export default function Order({ route, navigation }) {
                         style={OrderStyles.fab2}
                     >
                         <Text style={OrderStyles.fabIcon2}>+</Text>
-                    </TouchableOpacity>
+                    </TouchableOpacity> */}
                 </View>
             </View>
             <Footer />

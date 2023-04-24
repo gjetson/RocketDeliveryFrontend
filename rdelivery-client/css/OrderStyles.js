@@ -2,7 +2,8 @@ import { StyleSheet } from 'react-native'
 
 const OrderStyles = StyleSheet.create({
     categoriesItemContainer: {
-        // flex: 1,
+        flex: 1,
+        flexDirection: 'row',
         margin: 10,
         justifyContent: 'center',
         alignItems: 'center',
@@ -17,7 +18,7 @@ const OrderStyles = StyleSheet.create({
         borderRadius: 5,
         borderBottomLeftRadius: 5,
         borderBottomRightRadius: 5,
-        marginLeft: -280,
+        marginLeft: 0,
         marginTop: 1,
         shadowColor: 'blue',
         shadowOffset: {
@@ -63,8 +64,6 @@ const OrderStyles = StyleSheet.create({
         height: 30,
         bottom: 46,
         marginLeft: 300,
-
-
     },
 
     fab1: {
