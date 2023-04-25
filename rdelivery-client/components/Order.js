@@ -26,7 +26,7 @@ export default function Order({ route, navigation }) {
     console.log(item, customer_id, user_id, courier_id)
     const [modalVisible, setModalVisible] = useState(false)
     const [products, setProducts] = useState([])
-    const [order, setOrder] = useState({ total: 0, summary: '' })
+    const [orderTotal, setOrderTotal] = useState(0)
 
     useEffect(() => {
         const fetchProducts = async () => {
@@ -80,17 +80,106 @@ export default function Order({ route, navigation }) {
         setProducts(updated)
     }
 
-    const createOrder = () => {
-        const order = { total: 0, summary: '' }
+    const calculateOrderTotal = () => {
+        let total = 0
         products.forEach((product) => {
             if (product.count > 0) {
                 const subTotal = product.count * product.cost
-                order.total += subTotal
+                total += subTotal
             }
         })
-        if (order.total > 0) {
-            setOrder(order)
+        if (total > 0) {
+            setOrderTotal(total)
             setModalVisible(true)
+        }
+    }
+
+    // {
+    //     "restaurant_id": 1,
+    //     "customer_id": 1,
+    //     "products": [{"id": 1, "quantity": 1}]
+    // }
+
+    // const postProductOrder = async (order_id, product) => {
+    //     try {
+    //         console.log("order: ", order_id, ", product: ", product.id, 'qty: ', product.count, 'cost: ', product.cost)
+    //         const response = await fetch('http://localhost:3000/product_orders', {
+    //             method: 'POST',
+    //             headers: {
+    //                 Accept: 'application/json',
+    //                 'Content-Type': 'application/json',
+    //             },
+    //             body: JSON.stringify({
+    //                 product: product.id,
+    //                 order: order_id,
+    //                 product_quantity: product.count,
+    //                 product_unit_cost: product.cost
+    //             }),
+    //         })
+    //         if (response && response.status === 200) {
+    //             const json = await response.json()
+    //             console.log("postProductOrder: ", json)
+    //         } else {
+    //             console.log("response: ", response.status)
+    //         }
+    //     } catch (error) {
+    //         console.error(error)
+    //     }
+    // }
+
+    const postOrder = async () => {
+        try {
+            console.log("retaurant: ", item.restaurant.id, ", customer: ", customer_id)
+            const productsOrder = []
+            products.forEach((product) => {
+                if (product.count > 0) {
+                    console.log('quantity: ', product.count)
+                    productsOrder.push({
+                        "id": product.id,
+                        "quantity": product.count
+                    })
+                }
+            })
+            console.log("productsOrder: ", productsOrder)
+            const response = await fetch('http://localhost:3000/api/order', {
+                method: 'POST',
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    restaurant_id: item.restaurant.id,
+                    customer_id: customer_id,
+                    products: productsOrder
+                }),
+            })
+            if (response && response.status === 201) {
+                const json = await response.json()
+                console.log("postOrder: ", json)
+                // reset()
+            } else {
+
+                console.log("response: ", response.status)
+            }
+        } catch (error) {
+            console.error(error)
+        }
+        // setModalVisible(!modalVisible)
+    }
+
+
+
+    const reset = () => {
+        setOrderTotal(0)
+        products.forEach((product) => {
+            product.count = 0
+        })
+    }
+
+    const renderOrderSummary = ({ item }) => {
+        if (item.count > 0) {
+
+            return (<Text>{item.name}      {item.cost}  X  {item.count}</Text>)
         }
     }
 
@@ -178,18 +267,31 @@ export default function Order({ route, navigation }) {
                             <View style={MainStyles.modalView}>
                                 <Text style={MainStyles.modalText}>Order Confirmation</Text>
                                 <Text style={MainStyles.modalText2}>Order Summary</Text>
-                                <Text style={MainStyles.modalText3}> TOTAL: {order.total}</Text>
-                                <Pressable
-                                    style={MainStyles.buttonClose}
-                                    onPress={() => setModalVisible(!modalVisible)}>
-                                    <Text style={MainStyles.textStyle2}>CONFIRM ORDER</Text>
-                                </Pressable>
+                                <FlatList
+                                    data={products}
+                                    renderItem={renderOrderSummary}
+                                    keyExtractor={(item) => `${item.id}`}
+                                />
+                                <Text style={MainStyles.modalText3}> TOTAL: {orderTotal}</Text>
+                                <View style={{ flexDirection: 'row' }}>
+                                    <Pressable
+                                        style={MainStyles.buttonClose}
+                                        onPress={() => setModalVisible(!modalVisible)}>
+                                        <Text style={MainStyles.textStyle2}>Back</Text>
+                                    </Pressable>
+                                    <Text>      </Text>
+                                    <Pressable
+                                        style={MainStyles.buttonClose}
+                                        onPress={() => postOrder()}>
+                                        <Text style={MainStyles.textStyle2}>Confirm</Text>
+                                    </Pressable>
+                                </View>
                             </View>
                         </View>
                     </Modal>
                     <Pressable
                         style={MainStyles.button}
-                        onPress={() => createOrder()}>
+                        onPress={() => calculateOrderTotal()}>
                         <Text style={MainStyles.textStyle}>Create Order</Text>
                     </Pressable>
                 </View>
