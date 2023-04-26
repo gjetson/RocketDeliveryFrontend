@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react"
+import AsyncStorage from "@react-native-async-storage/async-storage"
 import {
     FlatList,
     Text,
@@ -18,7 +19,6 @@ import Footer from "./Footer"
 
 export default function Order({ route, navigation }) {
     const { item } = route.params
-    console.log(item, customer_id, user_id, courier_id)
     const [modalVisible, setModalVisible] = useState(false)
     const [products, setProducts] = useState([])
     const [orderTotal, setOrderTotal] = useState(0)
