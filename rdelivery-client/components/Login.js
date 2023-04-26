@@ -1,5 +1,6 @@
 import styles from "../css/MainStyles"
 import React, { useState } from 'react'
+import AsyncStorage from "@react-native-async-storage/async-storage"
 import {
     Button,
     TextInput,
@@ -35,11 +36,10 @@ export default function Login({ navigation }) {
                     setPassword('')
                     setFail(false)
                     console.log("login: ", json)
-                    navigation.navigate('Restaurants', {
-                        customer_id: json.customer_id,
-                        user_id: json.user_id,
-                        courier_id: json.courier_id,
-                    })
+                    await AsyncStorage.setItem('@user', json.user_id)
+                    await AsyncStorage.setItem('@customer', json.customer_id)
+                    await AsyncStorage.setItem('@courier', json.courier_id)
+                    navigation.navigate('Restaurants')
                 } else {
                     setEmail('')
                     setPassword('')

@@ -8,26 +8,21 @@ import Login from './components/Login'
 import Restaurants from './components/Restaurants'
 import Order from './components/Order'
 import OrderHistory from './components/OrderHistory'
-
-function DetailsScreen({ navigation }) {
-  return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-      <Text>Details Screen</Text>
-      <Button
-        title="Go to Details... again"
-        onPress={() => navigation.push('Details')}
-      />
-      <Button title="Go to Home" onPress={() => navigation.navigate('Home')} />
-      <Button title="Go back" onPress={() => navigation.goBack()} />
-      <Button
-        title="Go back to first screen in stack"
-        onPress={() => navigation.popToTop()}
-      />
-    </View>
-  )
-}
+import AsyncStorage from "@react-native-async-storage/async-storage"
 
 const Stack = createNativeStackNavigator()
+
+// const [user, setUser] = useState('')
+
+// const saveValueFunction = () => {
+//   if (user) {
+//     AsyncStorage.setItem('@user', user)
+//     setUser('')
+//     console.log('user id saved: ', AsyncStorage.getItem('@user'))
+//   } else {
+//     console.log('user not set')
+//   }
+// }
 
 export default function App() {
   return (
@@ -38,17 +33,16 @@ export default function App() {
         <Stack.Screen name="Restaurants" component={Restaurants} options={{ title: 'Restaurants' }} />
         <Stack.Screen name="Order" component={Order} options={{ title: 'Order' }} />
         <Stack.Screen name="OrderHistory" component={OrderHistory} options={{ title: 'Order History' }} />
-        <Stack.Screen name="Details" component={DetailsScreen} options={{ title: 'Bite Me...' }} />
       </Stack.Navigator>
     </NavigationContainer>
   )
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-})
+// const styles = StyleSheet.create({
+//   container: {
+//     flex: 1,
+//     backgroundColor: '#fff',
+//     alignItems: 'center',
+//     justifyContent: 'center',
+//   },
+// })

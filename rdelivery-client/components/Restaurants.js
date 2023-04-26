@@ -8,17 +8,14 @@ import {
     Button,
 } from "react-native"
 import restaurantStyles from "../css/RestaurantStyles"
-// import { recipes } from "../data/data_arrays"
 import Footer from "./Footer"
-import { getCategoryName } from "../data/MockDataApi"
 import MainStyles from "../css/MainStyles"
 import SelectDropdown from "react-native-select-dropdown"
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome"
 import { faSortDown } from "@fortawesome/free-solid-svg-icons/faSortDown"
 import ForwardButton from "./ForwardButton"
 
-export default function Restaurants({ route, navigation }) {
-    const { customer_id, user_id, courier_id } = route.params
+export default function Restaurants({ navigation }) {
     const [restaurants, setRestaurants] = useState([])
     const [ratings, setRatings] = useState([])
     const [prices, setPrices] = useState([])
@@ -69,7 +66,6 @@ export default function Restaurants({ route, navigation }) {
 
     const getDisplayRestaurants = () => {
         let display = filterRestaurantsByRating(restaurants)
-        console.log("filter: ", display)
         display = filterRestaurantsByPrice(display)
         console.log("display: ", display)
         return display
@@ -103,7 +99,7 @@ export default function Restaurants({ route, navigation }) {
 
     const random = () => {
         const i = Math.floor(Math.random() * 6) + 1
-        console.log(`../assets/images/restaurants/cuisine_${i}.jpg`)
+        // console.log(`../assets/images/restaurants/cuisine_${i}.jpg`)
         return i
     }
 
@@ -111,7 +107,7 @@ export default function Restaurants({ route, navigation }) {
         return (
             <TouchableHighlight
                 underlayColor="rgba(73,182,77,0.9)"
-                onPress={() => navigation.navigate("Order", { item, customer_id, user_id, courier_id })}
+                onPress={() => navigation.navigate("Order", { item })}
             >
                 <View style={MainStyles.container}>
                     <Image style={restaurantStyles.photo} source={require(`../assets/images/restaurants/cuisine_${random()}.jpg`)} />
@@ -205,7 +201,7 @@ export default function Restaurants({ route, navigation }) {
                     keyExtractor={(item) => `${item.restaurant.id}`}
                 />
             </View>
-            <Footer />
+            <Footer navigation={navigation} />
         </>
     )
 }

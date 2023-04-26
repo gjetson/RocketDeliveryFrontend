@@ -14,15 +14,10 @@ import {
 } from "react-native"
 import MainStyles from "../css/MainStyles"
 import OrderStyles from "../css/OrderStyles"
-import { categories } from "../data/data_arrays"
-import { getNumberOfRecipes } from "../data/MockDataApi"
-import MenuImage from "./MenuImage"
 import Footer from "./Footer"
-import BackButton from "./BackButton"
-import ForwardButton from "./ForwardButton"
 
 export default function Order({ route, navigation }) {
-    const { item, customer_id, user_id, courier_id } = route.params
+    const { item } = route.params
     console.log(item, customer_id, user_id, courier_id)
     const [modalVisible, setModalVisible] = useState(false)
     const [products, setProducts] = useState([])
@@ -94,39 +89,6 @@ export default function Order({ route, navigation }) {
         }
     }
 
-    // {
-    //     "restaurant_id": 1,
-    //     "customer_id": 1,
-    //     "products": [{"id": 1, "quantity": 1}]
-    // }
-
-    // const postProductOrder = async (order_id, product) => {
-    //     try {
-    //         console.log("order: ", order_id, ", product: ", product.id, 'qty: ', product.count, 'cost: ', product.cost)
-    //         const response = await fetch('http://localhost:3000/product_orders', {
-    //             method: 'POST',
-    //             headers: {
-    //                 Accept: 'application/json',
-    //                 'Content-Type': 'application/json',
-    //             },
-    //             body: JSON.stringify({
-    //                 product: product.id,
-    //                 order: order_id,
-    //                 product_quantity: product.count,
-    //                 product_unit_cost: product.cost
-    //             }),
-    //         })
-    //         if (response && response.status === 200) {
-    //             const json = await response.json()
-    //             console.log("postProductOrder: ", json)
-    //         } else {
-    //             console.log("response: ", response.status)
-    //         }
-    //     } catch (error) {
-    //         console.error(error)
-    //     }
-    // }
-
     const postOrder = async () => {
         try {
             console.log("retaurant: ", item.restaurant.id, ", customer: ", customer_id)
@@ -141,6 +103,7 @@ export default function Order({ route, navigation }) {
                 }
             })
             console.log("productsOrder: ", productsOrder)
+            const customer_id = await AsyncStorage.getItem("@customer")
             const response = await fetch('http://localhost:3000/api/order', {
                 method: 'POST',
                 headers: {
@@ -156,7 +119,7 @@ export default function Order({ route, navigation }) {
             if (response && response.status === 201) {
                 const json = await response.json()
                 console.log("postOrder: ", json)
-                // reset()
+                reset()
             } else {
 
                 console.log("response: ", response.status)
@@ -164,10 +127,8 @@ export default function Order({ route, navigation }) {
         } catch (error) {
             console.error(error)
         }
-        // setModalVisible(!modalVisible)
+        setModalVisible(!modalVisible)
     }
-
-
 
     const reset = () => {
         setOrderTotal(0)
@@ -235,16 +196,6 @@ export default function Order({ route, navigation }) {
 
     return (
         <>
-            {/* <BackButton
-          onPress={() => {
-            navigation.navigate('Restaurant');
-          }}
-        /> */}
-            <ForwardButton
-                onPress={() => {
-                    navigation.navigate("History")
-                }}
-            />
             <br />
             <Text style={MainStyles.nearby}> RESTAURANT MENU</Text>
             <br />
@@ -317,7 +268,7 @@ export default function Order({ route, navigation }) {
                     </TouchableOpacity> */}
                 </View>
             </View>
-            <Footer />
+            <Footer navigation={navigation} />
         </>
     )
 }

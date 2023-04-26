@@ -13,7 +13,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome"
 import { faMagnifyingGlassPlus } from "@fortawesome/free-solid-svg-icons/faMagnifyingGlassPlus"
 import MainStyles from "../css/MainStyles"
 import Footer from "./Footer"
-import BackButton from "./BackButton"
 import { useRoute } from "@react-navigation/native"
 import AsyncStorage from "@react-native-async-storage/async-storage"
 
@@ -21,73 +20,46 @@ const tableData = {
     tableHead: ["ORDER", "STATUS", "VIEW"],
 }
 
-const OrderHistory = () => {
-    const [data, setData] = useState(tableData)
+const OrderHistory = ({ navigation }) => {
     const [modalVisible, setModalVisible] = useState(false)
     const [orders, setOrders] = useState([])
-
-    const [selectedItem, setSelectedItem] = useState(null)
-    const [selectedStatus, setSelectedStatus] = useState(null)
-    const [selectedCourierID, setSelectedCourierID] = useState(null)
-    const [selectedproduct, setSelectedproduct] = useState(null)
-    // console.log(selectedproduct);
-
-    // To set the value on Text
-    const [getUserID, setGetuserID] = useState("")
-
-    const getcurrentCustomerId = async () => {
-        try {
-            const custID = await AsyncStorage.getItem("@userid")
-            return custID
-        } catch (error) {
-            console.log(error)
-        }
-    }
-
-    ////////// GET orders //////////////////////////////////
+    const [selectedOrder, setSelectedOrder] = useState(null)
 
     useEffect(() => {
         async function fetchOrders() {
-            const customerId = await getcurrentCustomerId()
-
-            const response = await fetch(
-                `http://localhost:3000/api/orders?type=customer&id=${customerId}`
-            )
-
-            if (!response.ok) {
-                const message = `An error has occurred: ${response.statusText}`
-                window.alert(message)
-                return
+            try {
+                const customer_id = await AsyncStorage.getItem("@customer")
+                console.log('customer_id: ', customer_id)
+                const response = await fetch(
+                    `http://localhost:3000/api/orders?type=customer&user_id=${customer_id}`
+                )
+                if (response.ok) {
+                    const json = await response.json()
+                    if (json) {
+                        console.log(json)
+                        setOrders(json)
+                    }
+                }
+            } catch (error) {
+                console.error(error)
             }
-            const data = await response.json()
-            if (!data) {
-                window.alert(`Order with id ${id} and type ${type} not found`)
-            }
-            console.log(data)
-            console.log("orders.restaurant_name", data[0].restaurant_name)
-            console.log("total cost:", data[0].total_cost)
-            console.log("products:", data[0].products[0].product_name)
-
-            setOrders(data)
-            // console.log(orders);
         }
-
         fetchOrders()
     }, [])
-    // console.log("orders:" , orders)
 
-    const productItem = ({ item }) => (
+
+    const renderProduct = ({ item }) => (
         <>
             <Text style={OrderHistoryStyles.modalText3}>
                 {" "}
                 {item.product_name}{" "}
             </Text>
-            <Text style={OrderHistoryStyles.quantityText}> x1 </Text>
-            <Text style={OrderHistoryStyles.priceText}> $ price </Text>
+            <Text style={OrderHistoryStyles.quantityText}> x {item.product_quantity}</Text>
+            <Text style={OrderHistoryStyles.priceText}> $ {item.unit_cost} </Text>
         </>
     )
 
-    const renderItem = ({ item }) => (
+    const renderOrder = ({ item }) => (
         <>
             <View>
                 <Text style={OrderHistoryStyles.nameText}>
@@ -103,11 +75,7 @@ const OrderHistory = () => {
                     style={OrderHistoryStyles.iconbutton}
                     onPress={() => {
                         setModalVisible(true)
-                        setSelectedItem(item.restaurant_name)
-                        setSelectedStatus(item.status)
-                        setSelectedCourierID(item.courier_id)
-                        setSelectedproduct(item.products.product_name)
-                        // setSelected_ (item.something)
+                        setSelectedOrder(item)
                     }}
                 >
                     <FontAwesomeIcon icon={faMagnifyingGlassPlus} />
@@ -122,17 +90,17 @@ const OrderHistory = () => {
                 <Text style={OrderHistoryStyles.myOrders}> MY ORDERS </Text>
                 <br />
                 <Row
-                    data={data.tableHead}
+                    data={tableData.tableHead}
                     style={OrderHistoryStyles.head}
                     textStyle={OrderHistoryStyles.headText}
                 />
                 <br />
 
                 <FlatList
-                    style={OrderHistoryStyles.orderhistroyList}
+                    style={OrderHistoryStyles.orderHistoryList}
                     data={orders}
-                    renderItem={renderItem}
-                    keyExtractor={(item) => item.id.toString()}
+                    renderItem={renderOrder}
+                    keyExtractor={(item) => item.id}
                 />
 
                 <View style={MainStyles.centeredView}>
@@ -141,67 +109,52 @@ const OrderHistory = () => {
                         transparent={true}
                         visible={modalVisible}
                         onRequestClose={() => {
-                            Alert.alert("Modal has been closed.")
                             setModalVisible(!modalVisible)
+                            setSelectedOrder(null)
                         }}
                     >
                         <View style={MainStyles.centered}>
                             <View style={MainStyles.modalView}>
                                 <Pressable
-                                    style={historystyles.buttonClosed}
+                                    style={OrderHistoryStyles.buttonClosed}
                                     onPress={() => {
                                         setModalVisible(!modalVisible)
-                                        setSelectedItem(null)
-                                        setSelectedStatus(null)
-                                        setSelectedCourierID(null)
-                                        setSelectedproduct(null)
-                                        // add setSelected_ to null  for when we close out it resets value
+                                        setSelectedOrder(null)
                                     }}
                                 >
-                                    <Text style={OrderHistoryStyles.xButton}>x</Text>
+                                    <Text style={OrderHistoryStyles.xButton}>xXx</Text>
                                 </Pressable>
                                 <Text style={OrderHistoryStyles.modalText}> </Text>
                                 <Text style={OrderHistoryStyles.modalText}>
-                                    {" "}
-                                    Name: {selectedItem}{" "}
+                                    Name: {selectedOrder && selectedOrder.customer_name}
                                 </Text>
                                 <Text style={OrderHistoryStyles.modalText2}>
-                                    Order Date: 2/14/2023
+                                    Order Date: {selectedOrder && selectedOrder.created_at}
                                 </Text>
                                 <Text style={OrderHistoryStyles.modalText2}>
-                                    {" "}
-                                    Status: {selectedStatus}
+                                    Status: {selectedOrder && selectedOrder.status}
                                 </Text>
                                 <Text style={OrderHistoryStyles.modalText2}>
-                                    {" "}
-                                    Courier ID: {selectedCourierID}
+                                    {selectedOrder && selectedOrder.courier_id && 'Courier ID:'} {selectedOrder && selectedOrder.courier_id}
                                 </Text>
                                 <Text style={OrderHistoryStyles.modalText}> </Text>
                                 <br />
-                                {/* <Text style={OrderHistoryStyles.modalText3}>
-                  {" "}
-                  {selectedproduct}{" "}
-                </Text> */}
-
                                 <FlatList
-                                    style={OrderHistoryStyles.orderhistroyList}
-                                    data={orders.products}
-                                    renderItem={productItem}
-                                    keyExtractor={(item) => item.products.product_id}
+                                    style={OrderHistoryStyles.orderHistoryList}
+                                    data={selectedOrder && selectedOrder.products}
+                                    renderItem={renderProduct}
+                                    keyExtractor={(item) => item.product_id}
                                 />
-
-                                {/* <Text style={OrderHistoryStyles.quantityText}> x1 </Text>
-                <Text style={OrderHistoryStyles.priceText}> $ price </Text> */}
                                 <br />
                                 <View style={OrderHistoryStyles.line} />
                                 <br />
-                                <Text style={OrderHistoryStyles.totalText}>TOTAL: $ Total </Text>
+                                <Text style={OrderHistoryStyles.totalText}>TOTAL: $ {selectedOrder && selectedOrder.total_cost} </Text>
                             </View>
                         </View>
                     </Modal>
                 </View>
             </View>
-            <Footer />
+            <Footer navigation={navigation} />
         </>
     )
 }
