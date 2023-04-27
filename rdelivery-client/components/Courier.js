@@ -59,13 +59,12 @@ export default function Courier({ route, navigation }) {
     const renderItem = ({ item }) => (
         <>
             <View style={{ flexDirection: 'row' }}>
-                <Text style={CourierStyles.nameText}>
-                    {" "}
-                    {"   "} {item.id}{" "}
-                </Text>
                 <br />
                 <br />
-                <Text style={CourierStyles.statusText}> {item.customer_address} </Text>
+                <Text style={CourierStyles.nameText}> {item.id} </Text>
+                <br />
+                <br />
+                <Text style={CourierStyles.addressText}> {item.customer_address} </Text>
                 <br />
                 <br />
                 <Text style={CourierStyles.statusText}> {item.status} </Text>

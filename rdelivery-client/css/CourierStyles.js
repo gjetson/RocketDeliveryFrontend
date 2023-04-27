@@ -26,7 +26,7 @@ const CourierStyles = StyleSheet.create({
     },
     iconbutton: {
         marginLeft: 515,
-        marginTop: -14,
+        marginTop: 20,
     },
     xButton: {
         color: "gray",
@@ -65,9 +65,13 @@ const CourierStyles = StyleSheet.create({
     nameText: {
         marginTop: 20,
     },
+    addressText: {
+        marginTop: 20,
+        marginLeft: 100,
+    },
     statusText: {
         marginLeft: 200,
-        marginTop: -51,
+        marginTop: 20,
     },
 
 })
