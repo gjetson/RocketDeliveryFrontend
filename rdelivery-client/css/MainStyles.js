@@ -84,6 +84,10 @@ const MainStyles = StyleSheet.create({
         marginLeft: 290,
         marginTop: -42,
     },
+    iconContent3: {
+        marginLeft: 390,
+        marginTop: -42,
+    },
     order: {
         padding: 10,
         width: "100%",

@@ -44,8 +44,10 @@ export default function Login({ navigation }) {
                     if (json.customer_id > 0 && json.courier_id > 0) {
                         navigation.navigate('AccountSelector')
                     } else if (json.customer_id > 0) {
-                        navigation.navigate('Restaurants')
+                        await AsyncStorage.setItem('@app', 'customer')
+                        navigation.navigate('Customer')
                     } else if (json.courier_id > 0) {
+                        await AsyncStorage.setItem('@app', 'courier')
                         navigation.navigate('Courier')
                     } else {
                         // throw new Error(`User must have a courier or customer ID. user_id: ${json.user_id}`)
