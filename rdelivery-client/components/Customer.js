@@ -7,15 +7,14 @@ import {
     Image,
     Button,
 } from "react-native"
-import restaurantStyles from "../css/RestaurantStyles"
+import CustomerStyles from "../css/CustomerStyles"
 import Footer from "./Footer"
 import MainStyles from "../css/MainStyles"
 import SelectDropdown from "react-native-select-dropdown"
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome"
 import { faSortDown } from "@fortawesome/free-solid-svg-icons/faSortDown"
-import ForwardButton from "./ForwardButton"
 
-export default function Restaurants({ navigation }) {
+export default function Customer({ navigation }) {
     const [restaurants, setRestaurants] = useState([])
     const [ratings, setRatings] = useState([])
     const [prices, setPrices] = useState([])
@@ -110,10 +109,10 @@ export default function Restaurants({ navigation }) {
                 onPress={() => navigation.navigate("Order", { item })}
             >
                 <View style={MainStyles.container}>
-                    <Image style={restaurantStyles.photo} source={require(`../assets/images/restaurants/cuisine_${random()}.jpg`)} />
+                    <Image style={CustomerStyles.photo} source={require(`../assets/images/restaurants/cuisine_${random()}.jpg`)} />
                     <br />
-                    <Text style={restaurantStyles.title}>{item.restaurant.name}</Text>
-                    <Text style={restaurantStyles.category}>
+                    <Text style={CustomerStyles.title}>{item.restaurant.name}</Text>
+                    <Text style={CustomerStyles.category}>
                         {item.ave_rating} stars
                     </Text>
                     <br />
@@ -124,12 +123,6 @@ export default function Restaurants({ navigation }) {
 
     return (
         <>
-            <ForwardButton
-                onPress={() => {
-                    navigation.navigate("Order")
-                }}
-            />
-            <br />
             <Text style={MainStyles.nearby}> NEARBY RESTAURANTS</Text>
             <br />
             <View style={MainStyles.dropdownsRow}>

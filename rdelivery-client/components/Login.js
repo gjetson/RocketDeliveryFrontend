@@ -14,6 +14,7 @@ export default function Login({ navigation }) {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [fail, setFail] = useState(false)
+    const [noID, setNoID] = useState(false)
 
     const loginPost = async () => {
         try {
@@ -35,11 +36,21 @@ export default function Login({ navigation }) {
                     setEmail('')
                     setPassword('')
                     setFail(false)
+                    setNoID(false)
                     console.log("login: ", json)
                     await AsyncStorage.setItem('@user', json.user_id)
                     await AsyncStorage.setItem('@customer', json.customer_id)
                     await AsyncStorage.setItem('@courier', json.courier_id)
-                    navigation.navigate('Restaurants')
+                    if (json.customer_id > 0 && json.courier_id > 0) {
+                        navigation.navigate('AccountSelector')
+                    } else if (json.customer_id > 0) {
+                        navigation.navigate('Restaurants')
+                    } else if (json.courier_id > 0) {
+                        navigation.navigate('Courier')
+                    } else {
+                        // throw new Error(`User must have a courier or customer ID. user_id: ${json.user_id}`)
+                        setNoID(true)
+                    }
                 } else {
                     setEmail('')
                     setPassword('')
@@ -89,6 +100,19 @@ export default function Login({ navigation }) {
                     secureTextEntry
                 />
 
+                {noID ? (
+                    <div>
+                        <br />
+                        <Text>User must have a courier or customer ID. Contact Admin to have one assigned.</Text>
+                        <br />
+                        <br />
+                        <br />
+                    </div>
+
+                ) : (
+                    <br />
+                )}
+
                 {fail ? (
                     <div>
                         <br />
@@ -100,8 +124,7 @@ export default function Login({ navigation }) {
 
                 ) : (
                     <br />
-                )
-                }
+                )}
                 <Button
                     title={"Login"}
                     style={styles.input}
