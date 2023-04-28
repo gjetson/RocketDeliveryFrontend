@@ -47,7 +47,6 @@ const OrderHistory = ({ navigation }) => {
         fetchOrders()
     }, [])
 
-
     const renderProduct = ({ item }) => (
         <>
             <Text style={OrderHistoryStyles.modalText3}>

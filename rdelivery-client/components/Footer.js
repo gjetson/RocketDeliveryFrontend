@@ -11,7 +11,7 @@ export default function Footer({ navigation }) {
     return (
 
         <View style={MainStyles.footer}>
-            <TouchableOpacity onPress={() => { navigation.navigate('Restaurants') }}>
+            <TouchableOpacity onPress={() => { navigation.navigate('CustomerApp') }}>
                 <View style={MainStyles.iconContent}>
                     <FontAwesomeIcon icon={faBurger} />
                     <Text style={MainStyles.footerText}> Restaurants </Text>

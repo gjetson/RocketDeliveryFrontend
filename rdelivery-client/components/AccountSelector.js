@@ -30,7 +30,7 @@ export default function AccountSelector({ navigation }) {
                     style={AccountStyles.customerPhoto}
                     onPress={async () => {
                         await AsyncStorage.setItem('@app', 'customer')
-                        navigation.navigate("Customer")
+                        navigation.navigate("CustomerApp")
                     }}>
                     <Image
                         style={AccountStyles.customer}
@@ -42,7 +42,7 @@ export default function AccountSelector({ navigation }) {
                     style={AccountStyles.courierPhoto}
                     onPress={async () => {
                         await AsyncStorage.setItem('@app', 'courier')
-                        navigation.navigate("Courier")
+                        navigation.navigate("CourierApp")
                     }} >
                     <Image
                         style={AccountStyles.customer}
