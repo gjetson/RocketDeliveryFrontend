@@ -46,15 +46,50 @@ export default function Courier({ route, navigation }) {
             }
         }
         fetchOrders()
-    }, [])
+    }, [orders.length])
 
-    const productItem = ({ item }) => (
+    const renderProduct = ({ item }) => (
         <>
             <Text style={CourierStyles.modalText3}> {item.product_name} </Text>
-            <Text style={CourierStyles.quantityText}> x1 </Text>
-            <Text style={CourierStyles.priceText}> $ price </Text>
+            <Text style={CourierStyles.quantityText}> x {item.product_quantity}</Text>
+            <Text style={CourierStyles.priceText}> $ {item.unit_cost} </Text>
         </>
     )
+
+    const updateStatus = (item) => {
+        if (item.status !== 'delivered') {
+            if (item.status === 'pending') {
+                postStatusUpdate(item.id, 'in progress')
+            } else {
+                postStatusUpdate(item.id, 'delivered')
+            }
+            setOrders([])
+        }
+    }
+
+    const postStatusUpdate = async (id, status) => {
+        try {
+            console.log('id: ', id, ' status: ', status)
+            const response = await fetch(`http://localhost:3000/api/order/${id}/status`, {
+                method: 'POST',
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    status: status
+                }),
+            })
+            if (response && response.status === 200) {
+                const json = await response.json()
+                console.log("postStatusUpdate: ", json)
+            } else {
+                console.log("response: ", response.status)
+            }
+        } catch (error) {
+            console.error(error)
+        }
+    }
 
     const renderItem = ({ item }) => (
         <>
@@ -64,10 +99,39 @@ export default function Courier({ route, navigation }) {
                 <Text style={CourierStyles.nameText}> {item.id} </Text>
                 <br />
                 <br />
-                <Text style={CourierStyles.addressText}> {item.customer_address} </Text>
+                <Text style={CourierStyles.statusText}> {item.customer_address} </Text>
                 <br />
                 <br />
-                <Text style={CourierStyles.statusText}> {item.status} </Text>
+                {item.status === 'pending' && (
+                    <Pressable
+                        // style={CourierStyles.statusPendingText}
+                        onPress={() => {
+                            updateStatus(item)
+                        }}
+                    >
+                        <Text style={CourierStyles.statusPendingText}> {item.status} </Text>
+                    </Pressable>
+                )}
+                {item.status === 'in progress' && (
+                    <Pressable
+                        // style={CourierStyles.statusInProgressText}
+                        onPress={() => {
+                            updateStatus(item)
+                        }}
+                    >
+                        <Text style={CourierStyles.statusInProgressText}> {item.status} </Text>
+                    </Pressable>
+                )}
+                {item.status === 'delivered' && (
+                    <Pressable
+                        // style={CourierStyles.statusDeliveredText}
+                        onPress={() => {
+                            updateStatus(item)
+                        }}
+                    >
+                        <Text style={CourierStyles.statusDeliveredText}> {item.status} </Text>
+                    </Pressable>
+                )}
                 <Pressable
                     style={CourierStyles.iconbutton}
                     onPress={() => {
@@ -139,8 +203,8 @@ export default function Courier({ route, navigation }) {
                                 <br />
                                 <FlatList
                                     style={CourierStyles.orderhistroyList}
-                                    data={orders.products}
-                                    renderItem={productItem}
+                                    data={selectedOrder && selectedOrder.products}
+                                    renderItem={renderProduct}
                                     keyExtractor={(item) => item.product_id}
                                 />
                                 <br />

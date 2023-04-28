@@ -25,7 +25,7 @@ const CourierStyles = StyleSheet.create({
         color: "white",
     },
     iconbutton: {
-        marginLeft: 515,
+        marginLeft: 625,
         marginTop: 20,
     },
     xButton: {
@@ -36,14 +36,28 @@ const CourierStyles = StyleSheet.create({
         color: "#DA583B",
         fontFamily: "Oswald",
         fontWeight: "bold",
-        textAlign: "left",
-        fontSize: 22,
+        textAlign: "center",
+        fontSize: 25,
         backgroundColor: "#222126",
     },
     modalText2: {
-        textAlign: "left",
+        textAlign: "center",
+        fontSize: 16,
         color: "white",
         backgroundColor: "#222126",
+    },
+    modalText4: {
+        fontSize: 16,
+    },
+    myOrders: {
+        fontSize: 30,
+        fontWeight: "bold",
+        fontFamily: "Oswald",
+    },
+    modalText5: {
+        fontSize: 18,
+        fontFamily: "Oswald",
+        fontWeight: "bold",
     },
     line: {
         borderBottomColor: "black",
@@ -51,7 +65,7 @@ const CourierStyles = StyleSheet.create({
     },
     totalText: {
         fontWeight: "bold",
-        marginLeft: 290,
+        marginLeft: 450,
         fontSize: 15,
     },
     quantityText: {
@@ -65,15 +79,25 @@ const CourierStyles = StyleSheet.create({
     nameText: {
         marginTop: 20,
     },
-    addressText: {
-        marginTop: 20,
-        marginLeft: 100,
-    },
     statusText: {
         marginLeft: 200,
         marginTop: 20,
     },
-
+    statusPendingText: {
+        backgroundColor: 'red',
+        marginLeft: 200,
+        marginTop: 20,
+    },
+    statusInProgressText: {
+        backgroundColor: 'orange',
+        marginLeft: 200,
+        marginTop: 20,
+    },
+    statusDeliveredText: {
+        backgroundColor: 'green',
+        marginLeft: 200,
+        marginTop: 20,
+    },
 })
 
 export default CourierStyles
