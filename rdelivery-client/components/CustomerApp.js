@@ -14,7 +14,7 @@ import SelectDropdown from "react-native-select-dropdown"
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome"
 import { faSortDown } from "@fortawesome/free-solid-svg-icons/faSortDown"
 
-export default function Customer({ navigation }) {
+export default function CustomerApp({ navigation }) {
     const [restaurants, setRestaurants] = useState([])
     const [ratings, setRatings] = useState([])
     const [prices, setPrices] = useState([])
@@ -41,6 +41,7 @@ export default function Customer({ navigation }) {
                     console.error(response.status)
                 }
             } catch (error) {
+                OrdersController
                 console.error(error)
             }
         }

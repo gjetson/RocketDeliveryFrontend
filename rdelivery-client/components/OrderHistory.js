@@ -62,8 +62,7 @@ const OrderHistory = ({ navigation }) => {
         <>
             <View>
                 <Text style={OrderHistoryStyles.nameText}>
-                    {" "}
-                    {"   "} {item.restaurant_name}{" "}
+                    {item.restaurant_name}
                 </Text>
                 <br />
                 <br />
@@ -121,7 +120,7 @@ const OrderHistory = ({ navigation }) => {
                                         setSelectedOrder(null)
                                     }}
                                 >
-                                    <Text style={OrderHistoryStyles.xButton}>xXx</Text>
+                                    <Text style={OrderHistoryStyles.xButton}>X</Text>
                                 </Pressable>
                                 <Text style={OrderHistoryStyles.modalText}> </Text>
                                 <Text style={OrderHistoryStyles.modalText}>

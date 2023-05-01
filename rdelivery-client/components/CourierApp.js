@@ -9,7 +9,7 @@ import {
     Modal,
     Pressable,
 } from "react-native"
-import MainStyles from "../css/MainStyles"
+import styles from "../css/MainStyles"
 import CourierStyles from "../css/CourierStyles"
 import { Table, Row, Rows } from "react-native-table-component"
 import AsyncStorage from "@react-native-async-storage/async-storage"
@@ -20,7 +20,7 @@ import { faMagnifyingGlassPlus } from "@fortawesome/free-solid-svg-icons/faMagni
 const tableData = {
     tableHead: ["ORDER ID", "ADDRESS", "STATUS", "VIEW"],
 }
-export default function Courier({ route, navigation }) {
+export default function CourierApp({ navigation }) {
 
     const [modalVisible, setModalVisible] = useState(false)
     const [orders, setOrders] = useState([])
@@ -44,15 +44,15 @@ export default function Courier({ route, navigation }) {
             } catch (error) {
                 console.error(error)
             }
-        }
+        } orders
         fetchOrders()
     }, [orders.length])
 
     const renderProduct = ({ item }) => (
         <>
             <Text style={CourierStyles.modalText3}> {item.product_name} </Text>
-            <Text style={CourierStyles.quantityText}> x {item.product_quantity}</Text>
-            <Text style={CourierStyles.priceText}> $ {item.unit_cost} </Text>
+            <Text style={CourierStyles.quaText}> x {item.product_quantity}</Text>
+            <Text style={CourierStyles.pText}> $ {item.unit_cost} </Text>
         </>
     )
 
@@ -99,12 +99,11 @@ export default function Courier({ route, navigation }) {
                 <Text style={CourierStyles.nameText}> {item.id} </Text>
                 <br />
                 <br />
-                <Text style={CourierStyles.statusText}> {item.customer_address} </Text>
+                <Text style={CourierStyles.addressText}> {item.customer_address} </Text>
                 <br />
                 <br />
                 {item.status === 'pending' && (
                     <Pressable
-                        // style={CourierStyles.statusPendingText}
                         onPress={() => {
                             updateStatus(item)
                         }}
@@ -114,7 +113,6 @@ export default function Courier({ route, navigation }) {
                 )}
                 {item.status === 'in progress' && (
                     <Pressable
-                        // style={CourierStyles.statusInProgressText}
                         onPress={() => {
                             updateStatus(item)
                         }}
@@ -124,7 +122,6 @@ export default function Courier({ route, navigation }) {
                 )}
                 {item.status === 'delivered' && (
                     <Pressable
-                        // style={CourierStyles.statusDeliveredText}
                         onPress={() => {
                             updateStatus(item)
                         }}
@@ -144,65 +141,70 @@ export default function Courier({ route, navigation }) {
             </View>
         </>
     )
+
     return (
         <>
             <View style={CourierStyles.container}>
-                <br />
-                <br />
-                <Text style={CourierStyles.headertext}> MY DELIVERIES </Text>
+                <Text style={CourierStyles.myOrders}> MY DELIVERIES </Text>
                 <br />
                 <Row
                     data={tableData.tableHead}
                     style={CourierStyles.head}
                     textStyle={CourierStyles.headText}
                 />
+                <br />
 
                 <FlatList
-                    style={CourierStyles.orderhistroyList}
                     data={orders}
                     renderItem={renderItem}
                     keyExtractor={(item) => item.id.toString()}
                 />
 
-                <View style={MainStyles.centeredView}>
+                <View style={styles.centeredView}>
                     <Modal
+                        animationType="slide"
                         transparent={true}
                         visible={modalVisible}
                         onRequestClose={() => {
                             setModalVisible(!modalVisible)
                         }}
                     >
-                        <View style={MainStyles.centered}>
-                            <View style={MainStyles.modalView}>
+                        <View style={styles.centered}>
+                            <View style={styles.modalView}>
                                 <Pressable
-                                    style={CourierStyles.buttonClosed}
                                     onPress={() => {
                                         setModalVisible(!modalVisible)
+
                                         setSelectedOrder(null)
                                     }}
                                 >
                                     <Text style={CourierStyles.xButton}>x</Text>
                                 </Pressable>
                                 <Text style={CourierStyles.modalText}> </Text>
-                                <Text style={CourierStyles.modalText}>
-                                    {" "}
-                                    Name: {selectedOrder && selectedOrder.customer_name}
-                                </Text>
-                                <Text style={CourierStyles.modalText2}>
-                                    Order Date: {selectedOrder && selectedOrder.created_at}
-                                </Text>
+                                <Text style={CourierStyles.modalText}> DELIVERY DETAILS </Text>
+
                                 <Text style={CourierStyles.modalText2}>
                                     {" "}
                                     Status: {selectedOrder && selectedOrder.status}
                                 </Text>
-                                <Text style={CourierStyles.modalText2}>
-                                    {" "}
-                                    Courier ID: {selectedOrder && selectedOrder.courier_id}
-                                </Text>
+
                                 <Text style={CourierStyles.modalText}> </Text>
                                 <br />
+                                <Text style={CourierStyles.modalText4}>
+                                    {" "}
+                                    Delivery Address:{selectedOrder && selectedOrder.customer_address}
+                                </Text>
+                                <Text style={CourierStyles.modalText4}>
+                                    {" "}
+                                    Restaurant: {selectedOrder && selectedOrder.restaurant_name}
+                                </Text>
+                                <Text style={CourierStyles.modalText4}>
+                                    {" "}
+                                    Order Date: {selectedOrder && selectedOrder.created_at}
+                                </Text>
+                                <br />
+                                <Text style={CourierStyles.modalText5}> Order Details: </Text>
                                 <FlatList
-                                    style={CourierStyles.orderhistroyList}
                                     data={selectedOrder && selectedOrder.products}
                                     renderItem={renderProduct}
                                     keyExtractor={(item) => item.product_id}
@@ -210,12 +212,16 @@ export default function Courier({ route, navigation }) {
                                 <br />
                                 <View style={CourierStyles.line} />
                                 <br />
-                                <Text style={CourierStyles.totalText}>TOTAL: $ {selectedOrder && selectedOrder.total_cost} </Text>
+                                <Text style={CourierStyles.totalText}>
+                                    TOTAL: $ {selectedOrder && selectedOrder.total_cost}{" "}
+                                </Text>
+                                <br />
                             </View>
                         </View>
                     </Modal>
                 </View>
             </View>
+
             <Footer navigation={navigation} />
         </>
     )

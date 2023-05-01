@@ -25,7 +25,7 @@ const CourierStyles = StyleSheet.create({
         color: "white",
     },
     iconbutton: {
-        marginLeft: 625,
+        marginLeft: 100,
         marginTop: 20,
     },
     xButton: {
@@ -72,30 +72,46 @@ const CourierStyles = StyleSheet.create({
         marginLeft: 250,
         marginTop: -15,
     },
+    quaText: {
+        marginLeft: 250,
+        marginTop: -15,
+    },
     priceText: {
+        marginLeft: 320,
+        marginTop: -18,
+    },
+    pText: {
         marginLeft: 320,
         marginTop: -18,
     },
     nameText: {
         marginTop: 20,
+        marginLeft: 45,
     },
     statusText: {
-        marginLeft: 200,
+        marginLeft: 400,
+        marginTop: -51,
+    },
+    addressText: {
+        marginLeft: 75,
         marginTop: 20,
     },
     statusPendingText: {
-        backgroundColor: 'red',
-        marginLeft: 200,
+        backgroundColor: "red",
+        width: 60,
+        marginLeft: 75,
         marginTop: 20,
     },
     statusInProgressText: {
-        backgroundColor: 'orange',
-        marginLeft: 200,
+        backgroundColor: "orange",
+        width: 80,
+        marginLeft: 75,
         marginTop: 20,
     },
     statusDeliveredText: {
-        backgroundColor: 'green',
-        marginLeft: 200,
+        backgroundColor: "green",
+        width: 65,
+        marginLeft: 75,
         marginTop: 20,
     },
 })

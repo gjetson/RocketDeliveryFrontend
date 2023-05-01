@@ -32,7 +32,7 @@ const OrderHistoryStyles = StyleSheet.create({
     },
 
     iconbutton: {
-        marginLeft: 375,
+        marginLeft: 510,
         marginTop: -14,
     },
 
@@ -51,16 +51,16 @@ const OrderHistoryStyles = StyleSheet.create({
         backgroundColor: "#222126",
     },
     quantityText: {
-        marginLeft: 250,
+        marginLeft: 350,
         marginTop: -15,
     },
     priceText: {
-        marginLeft: 320,
+        marginLeft: 500,
         marginTop: -18,
     },
     totalText: {
         fontWeight: "bold",
-        marginLeft: 290,
+        marginLeft: 450,
         fontSize: 15,
     },
     line: {
@@ -73,9 +73,10 @@ const OrderHistoryStyles = StyleSheet.create({
     },
     nameText: {
         marginTop: 20,
+        marginLeft: 30,
     },
     statusText: {
-        marginLeft: 200,
+        marginLeft: 268,
         marginTop: -51,
     },
 })
